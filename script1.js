@@ -1,45 +1,7 @@
 "use strict";
-
-//======================================================== Generate Chess Board Element
-const container = document.querySelector(".container");
-const row_col = 8;
-let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-let index = 0;
-let dark = false;
-let num = 1;
-
-//Create a div containing the whole chess-board
-const chessBoard = document.createElement("div");
-chessBoard.className = "chess-board";
-
-//function to genrate chess board and assigns individual squares an id
-function generateBoard() {
-  //Create the squares in the board
-  for (let i = row_col; i > 0; i--) {
-    for (let j = 0; j < row_col; j++) {
-      const square = document.createElement("div");
-      square.className = "piece-box";
-      //alternate the creations of dark and light squares
-      if (dark) {
-        square.classList.add("dark-box");
-        square.id = `${letters[j]}${i}`;
-        square.innerHTML = `<span class="piece-box-text">${square.id}</span>`;
-        dark = !dark;
-      } else {
-        square.classList.add("light-box");
-        square.id = `${letters[j]}${i}`;
-        square.innerHTML = `<span class="piece-box-text">${square.id}</span>`;
-        dark = !dark;
-      }
-      chessBoard.appendChild(square);
-    }
-    dark = !dark;
-  }
-
-  container.appendChild(chessBoard);
-}
-
-//======================================================== Generate Chess Pieces on the board
+////////////////////////////////
+//  Initial Game Objects
+////////////////////////////////
 
 //create an Object for initial piece position => Key: position id, value: piece type
 const initialPos = {
@@ -131,34 +93,27 @@ const piecesImg = {
   black_queen: "./img/bq.png",
 };
 
-//function to place pieces at the allocated position from 'object'pos
-function placePiecesInPosition(gameSetup) {
-  //comb through the keys in an object (gamesetup)
-  for (const piecePos in gameSetup) {
-    //get the key value (piece type) and assign it to 'pieceType'
-    const pieceType = gameSetup[piecePos];
-    //since pieceType is the key in piecesImg(object), use it to access the individual src and assign it to 'imgLoc'
-    const imgLoc = piecesImg[pieceType];
-    //create img element with class="piece", piece-type= piceType and src of the individual img base on the pieceType
-    const imgElement = document.createElement("img");
-    imgElement.classList.add("piece");
-    imgElement.setAttribute("piece-type", pieceType);
-    imgElement.src = `${imgLoc}`;
-    //img Element is appended to the the square id that is given by the key from the object (gamesetup)
-    document.querySelector(`#${piecePos}`).append(imgElement);
-  }
-}
-//======================================================== Create Class for the Chess pieces
+////////////////////////////////
+//  Create Game Class
+////////////////////////////////
 
 class Game {
-  constructor(isPlayerWhite, appendTo) {
-    this.isPlayerWhite, this.appendTo;
+  constructor(isPlayerWhite) {
+    this.isPlayerWhite;
   }
+  //======================================================== Function to Generate Chess Board Element
+  generateBoard() {
+    const container = document.querySelector(".container");
+    const row_col = 8;
+    let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    let index = 0;
+    let dark = false;
+    let num = 1;
 
-  //function to genrate chess board and assigns individual squares an id
-  generateBoard(playerColor, appendTo) {
-    playerColor = this.isPlayerWhite;
-    appendTo = this.appendTo;
+    //Create a div containing the whole chess-board
+    const chessBoard = document.createElement("div");
+    chessBoard.className = "chess-board";
+
     //Create the squares in the board
     for (let i = row_col; i > 0; i--) {
       for (let j = 0; j < row_col; j++) {
@@ -180,16 +135,32 @@ class Game {
       }
       dark = !dark;
     }
-    appendTo.appendChild(chessBoard);
 
-    //rotate board if player is not white
-    if (!playerColor) {
-      chessBoard.style.transform.rotate(180);
+    container.appendChild(chessBoard);
+  }
+  //======================================================== Generate Chess Pieces on the board based on objects
+  //function to place pieces at the allocated position from 'object'pos
+  generatePieceBasedOnObject(object) {
+    //comb through the keys in an object
+    for (const piecePos in object) {
+      //get the key value (piece type) and assign it to 'pieceType'
+      const pieceType = object[piecePos];
+      //since pieceType is the key in piecesImg(object), use it to access the individual src and assign it to 'imgLoc'
+      const imgLoc = piecesImg[pieceType];
+      //create img element with class="piece", piece-type= piceType and src of the individual img base on the pieceType
+      const imgElement = document.createElement("img");
+      imgElement.classList.add("piece");
+      imgElement.setAttribute("piece-type", pieceType);
+      imgElement.src = `${imgLoc}`;
+      //img Element is appended to the the square id that is given by the key from the object
+      document.querySelector(`#${piecePos}`).append(imgElement);
     }
   }
-
-  movePiece(pieceeId, to) {}
 }
+
+////////////////////////////////
+//  Create ChessPiece Class
+////////////////////////////////
 
 class ChessPiece {
   constructor(name, id, color, isSelected, isAttacked) {
@@ -201,7 +172,9 @@ class ChessPiece {
   getSquare() {}
 }
 
-//======================================================== Move Chess Pieces on the board
+////////////////////////////////
+//  Add Event Listeners
+////////////////////////////////
 
 const posArray = [];
 //select box
@@ -244,9 +217,12 @@ function AddSquareListeners() {
   }
 }
 
-generateBoard();
-placePiecesInPosition(initialPos);
-AddSquareListeners();
-console.log(posArray);
+////////////////////////////////
+//  Start Chess Game
+////////////////////////////////
 
-//======================================================== Start Chess Game
+let isPlayerWhite = true;
+const chessGame = new Game(isPlayerWhite);
+chessGame.generateBoard();
+chessGame.generatePieceBasedOnObject(initialPos);
+AddSquareListeners();

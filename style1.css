@@ -1,0 +1,103 @@
+/* * {
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+body {
+  overflow: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*==================================================================*/ /* Chess Board*/
+
+.container {
+  margin-top: 100px;
+}
+
+.chess-board {
+  height: 399px;
+  width: 399px;
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-wrap: wrap-reverse; */
+  border: 3px solid black;
+  /* transform: rotate(180deg); */
+}
+
+.piece-box {
+  width: 12.5%;
+  height: 12.5%;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.piece-box.dark-box {
+  background: grey;
+}
+
+.piece-box.light-box {
+  background: white;
+}
+
+.piece-box-text {
+  /* display: none; */
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  font-size: 12px;
+  color: #444;
+  opacity: 0.9;
+}
+
+/*==================================================================*/ /* Chess Pieces*/
+
+.piece {
+  width: 40px;
+  height: 45px;
+}
+
+.piece-selected {
+  background: yellow !important;
+}
+.piece-ready {
+  background: yellowgreen !important;
+}
+
+/*==================================================================*/ /*==================================================================*/
+
+/* .upperdiv {
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 670px;
+  height: 670px;
+  font-size: 1.5rem;
+}
+
+.numbers {
+  height: 100%;
+  width: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  color: black;
+  left: 0;
+  top: 0;
+  text-align: center;
+}
+
+.letters {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+} */

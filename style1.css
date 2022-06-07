@@ -27,6 +27,17 @@ body {
   /* transform: rotate(180deg); */
 }
 
+.graveyard {
+  margin-top: 100px;
+  height: 400px;
+  width: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-wrap: wrap-reverse; */
+  border: 3px solid black;
+  /* transform: rotate(180deg); */
+}
+
 .piece-box {
   width: 12.5%;
   height: 12.5%;
@@ -69,6 +80,9 @@ body {
   background: red !important;
 }
 .piece-ready {
+  background: yellowgreen !important;
+}
+.selected {
   background: yellowgreen !important;
 }
 

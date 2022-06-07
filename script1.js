@@ -7,6 +7,7 @@
 const gameState = {
   whoseTurn: "white",
   selected: "",
+  storedPieceElement: null,
 };
 
 ///type of piecedetereee
@@ -296,7 +297,7 @@ function updateCurrParam() {
     // console.log(pieceElement);
     // console.log(pieceType);
 
-    console.log(currentParams);
+    // console.log(currentParams);
 
     // return handleParams;
   });
@@ -397,42 +398,99 @@ function updateCurrParam() {
 // };
 //======================================================================
 
-const EventListenerObj = {
-  eventListenerStuff() {
-    [...document.querySelectorAll(".piece-box")].map((squareArray) => {
-      //get the square id
-      const squareArrayId = squareArray.getAttribute("id");
-      //get the img element of individual pieces
-      // const pieceElement = squareArray.querySelector(".piece");
-      // //get the value of the 'piece-type' attribute => 'color_nameOfPiece'
-      // const piece = pieceElement?.getAttribute("piece-type") ?? null;
-      // //initialise possibleMoves obj with multiple empty obj with key of the square id
-      // const pieceType = piece?.slice(piece.indexOf("_") + 1) ?? null;
+function eventListenerStuff() {
+  [...document.querySelectorAll(".piece-box")].map((squareArray) => {
+    //get the square id
+    const squareArrayId = squareArray.getAttribute("id");
+    //get the img element of individual pieces
+    // const pieceElement = squareArray.querySelector(".piece");
+    // //get the value of the 'piece-type' attribute => 'color_nameOfPiece'
+    // const piece = pieceElement?.getAttribute("piece-type") ?? null;
+    // //initialise possibleMoves obj with multiple empty obj with key of the square id
+    // const pieceType = piece?.slice(piece.indexOf("_") + 1) ?? null;
 
-      // const pieceColor = piece?.slice(0, piece.indexOf("_")) ?? null;
+    // const pieceColor = piece?.slice(0, piece.indexOf("_")) ?? null;
 
-      squareArray.addEventListener("click", (e) => {
-        if (
-          currentParams[squareArrayId].pieceElement &&
-          document.querySelector(".select") == null
-        ) {
-          squareArray.classList.add("selected");
-          isSelected = true;
-          console.log(e.currentTarget);
-        } else if (
-          currentParams[squareArrayId].pieceElement === null &&
-          document.querySelector(".selected") !== null
-        ) {
-          const oldId = document.querySelector(".selected").getAttribute("id");
-          e.currentTarget.appendChild(currentParams[oldId].pieceElement);
-          currentParams[oldId].squareArray.classList.remove("selected");
-          updateCurrParam();
-        }
-      });
-    });
-  },
+    /*
+
+//Game Current State
+const gameState = {
+  whoseTurn: "white",
+  selected: "",
+  storedPieceElement: null,
 };
 
+
+
+*/
+
+    squareArray.addEventListener("click", (e) => {
+      if (
+        //========================================================== if img exist and there is no piece selected and stored piece eleemnt is null
+        currentParams[squareArrayId].pieceElement &&
+        document.querySelector(".select") === null &&
+        gameState.storedPieceElement === null
+      ) {
+        squareArray.classList.add("selected");
+        gameState.storedPieceElement =
+          currentParams[squareArrayId].pieceElement;
+        // console.log(gameState.storedPieceElement);
+      } else if (
+        //========================================================== if img doesn't exist and there is piece selected
+        currentParams[squareArrayId].pieceElement === null &&
+        document.querySelector(".selected") !== null
+      ) {
+        const oldId = document.querySelector(".selected").getAttribute("id");
+        e.currentTarget.appendChild(currentParams[oldId].pieceElement);
+        currentParams[oldId].squareArray.classList.remove("selected");
+        gameState.storedPieceElement = null;
+      } else if (
+        //========================================================== if e.currentTarget is equal to the .selected
+        document.querySelector(".selected") === e.currentTarget
+      ) {
+        // console.log(e.currentTarget);
+        e.currentTarget.classList.remove("selected");
+        gameState.storedPieceElement = null;
+      } else if (
+        //========================================================== if img exist and there is piece selected
+        currentParams[squareArrayId].pieceElement &&
+        document.querySelector(".selected") !== null
+      ) {
+        const attackerId = document
+          .querySelector(".selected")
+          .getAttribute("id");
+        const attacker = currentParams[attackerId].pieceElement;
+        // const attackerSquare = document.querySelector(".selected");
+        const eaten = currentParams[squareArrayId].pieceElement;
+        const eatensquare = currentParams[squareArrayId].squareArray;
+        const graveyard = document.querySelector(".graveyard");
+        graveyard.appendChild(eaten);
+        updateCurrParam();
+        eatensquare.appendChild(attacker);
+        updateCurrParam();
+
+        const selected = document.querySelector(".selected");
+        selected.classList.remove("selected");
+        gameState.storedPieceElement = null;
+        // graveyard.appendChild(eaten);
+        // currentParams[squareArrayId].pieceElement = attacker;
+
+        // attackerSquare.classList.remove("selected");
+        // gameState.storedPieceElement = null;
+
+        /*const atkId = document.querySelector(".selected").getAttribute("id");
+          currentParams[attackId].squareArray.classList.remove("selected");
+
+          const defId = e.currentTarget.getAttribute("id");
+          currentParams[defId].pieceElement.remove();
+          currentParams[defId].squareArray.appendChild(
+            currentParams[attackId].pieceElement
+          );*/
+      }
+      updateCurrParam();
+    });
+  });
+}
 //=======================================================================
 
 // const chessBoard = document.querySelector(".chess-board");
@@ -461,7 +519,7 @@ generateBoard();
 generatePieceBasedOnObject(initialPos);
 
 updateCurrParam();
-EventListenerObj.eventListenerStuff();
+eventListenerStuff();
 // EventListenerObj.resetPiecesBoxListeners();
 // console.log(piecesEventListeners);
 getPossibleMoves();

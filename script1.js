@@ -3,6 +3,45 @@
 //  Initial Game Objects
 ////////////////////////////////
 
+//Game Current State
+const gameState = {
+  whoseTurn: "white",
+};
+
+///type of piecedetereee
+
+const pieceDetermineConfig = {
+  pawn: "determinePawn",
+  knight: "determineKnight",
+  rook: "determineRook",
+  bishop: "determineBishop",
+  queen: "determineQueen",
+  king: "determineKing",
+};
+
+//help in  the logic of the game when is comes to the letter  of the id
+const alphPosIn = {
+  a: "1",
+  b: "2",
+  c: "3",
+  d: "4",
+  e: "5",
+  f: "6",
+  g: "7",
+  h: "8",
+};
+
+const alphPosOut = {
+  1: "a",
+  2: "b",
+  3: "c",
+  4: "d",
+  5: "e",
+  6: "f",
+  7: "g",
+  8: "h",
+};
+
 //create an Object for initial piece position => Key: position id, value: piece type
 const initialPos = {
   a8: "black_rook",
@@ -94,135 +133,292 @@ const piecesImg = {
 };
 
 ////////////////////////////////
-//  Create Game Class
+//  Generate Chess Board
 ////////////////////////////////
 
-class Game {
-  constructor(isPlayerWhite) {
-    this.isPlayerWhite;
-  }
-  //======================================================== Function to Generate Chess Board Element
-  generateBoard() {
-    const container = document.querySelector(".container");
-    const row_col = 8;
-    let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-    let index = 0;
-    let dark = false;
-    let num = 1;
+function generateBoard() {
+  const container = document.querySelector(".container");
+  const row_col = 8;
+  let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  let index = 0;
+  let dark = false;
+  let num = 1;
 
-    //Create a div containing the whole chess-board
-    const chessBoard = document.createElement("div");
-    chessBoard.className = "chess-board";
+  //Create a div containing the whole chess-board
+  const chessBoard = document.createElement("div");
+  chessBoard.className = "chess-board";
 
-    //Create the squares in the board
-    for (let i = row_col; i > 0; i--) {
-      for (let j = 0; j < row_col; j++) {
-        const square = document.createElement("div");
-        square.className = "piece-box";
-        //alternate the creations of dark and light squares
-        if (dark) {
-          square.classList.add("dark-box");
-          square.id = `${letters[j]}${i}`;
-          square.innerHTML = `<span class="piece-box-text">${square.id}</span>`;
-          dark = !dark;
-        } else {
-          square.classList.add("light-box");
-          square.id = `${letters[j]}${i}`;
-          square.innerHTML = `<span class="piece-box-text">${square.id}</span>`;
-          dark = !dark;
-        }
-        chessBoard.appendChild(square);
+  //Create the squares in the board
+  for (let i = row_col; i > 0; i--) {
+    for (let j = 0; j < row_col; j++) {
+      const square = document.createElement("div");
+      square.className = "piece-box";
+      //alternate the creations of dark and light squares
+      if (dark) {
+        square.classList.add("dark-box");
+        square.id = `${letters[j]}${i}`;
+        square.innerHTML = `<span class="piece-box-text">${square.id}</span>`;
+        dark = !dark;
+      } else {
+        square.classList.add("light-box");
+        square.id = `${letters[j]}${i}`;
+        square.innerHTML = `<span class="piece-box-text">${square.id}</span>`;
+        dark = !dark;
       }
-      dark = !dark;
+      chessBoard.appendChild(square);
     }
-
-    container.appendChild(chessBoard);
+    dark = !dark;
   }
-  //======================================================== Generate Chess Pieces on the board based on objects
-  //function to place pieces at the allocated position from 'object'pos
-  generatePieceBasedOnObject(object) {
-    //comb through the keys in an object
-    for (const piecePos in object) {
-      //get the key value (piece type) and assign it to 'pieceType'
-      const pieceType = object[piecePos];
-      //since pieceType is the key in piecesImg(object), use it to access the individual src and assign it to 'imgLoc'
-      const imgLoc = piecesImg[pieceType];
-      //create img element with class="piece", piece-type= piceType and src of the individual img base on the pieceType
-      const imgElement = document.createElement("img");
-      imgElement.classList.add("piece");
-      imgElement.setAttribute("piece-type", pieceType);
-      imgElement.src = `${imgLoc}`;
-      //img Element is appended to the the square id that is given by the key from the object
-      document.querySelector(`#${piecePos}`).append(imgElement);
-    }
+
+  container.appendChild(chessBoard);
+}
+
+////////////////////////////////
+//  Generate Pieces based on Object called 'initialPos'
+////////////////////////////////
+
+function generatePieceBasedOnObject(object) {
+  //comb through the keys in an object
+  for (const piecePos in object) {
+    //get the key value (piece type) and assign it to 'pieceType'
+    const pieceType = object[piecePos];
+    //since pieceType is the key in piecesImg(object), use it to access the individual src and assign it to 'imgLoc'
+    const imgLoc = piecesImg[pieceType];
+    //create img element with class="piece", piece-type= piceType and src of the individual img base on the pieceType
+    const imgElement = document.createElement("img");
+    imgElement.classList.add("piece");
+    imgElement.setAttribute("piece-type", pieceType);
+    imgElement.src = `${imgLoc}`;
+    //img Element is appended to the the square id that is given by the key from the object
+    document.querySelector(`#${piecePos}`).append(imgElement);
   }
 }
 
 ////////////////////////////////
-//  Create ChessPiece Class
+//  Move Pieces using Event Listeners
 ////////////////////////////////
 
-class ChessPiece {
-  constructor(name, id, color, isSelected, isAttacked) {
-    this.name, this.id, this.isSelected, this.isAttacked;
-  }
+//initialise possibleMoves as an object
+const possibleMoves = {};
+const currentParams = {};
 
-  setSquare(square) {}
+function getPossibleMoves() {
+  [...document.querySelectorAll(".piece-box")].map((squareArray) => {
+    //get the square id
+    const squareArrayId = squareArray.getAttribute("id");
+    //get the img element of individual pieces
+    const pieceElement = squareArray.querySelector(".piece");
+    //get the value of the 'piece-type' attribute => 'color_nameOfPiece'
+    const piece = pieceElement?.getAttribute("piece-type") ?? null;
+    //initialise possibleMoves obj with multiple empty obj with key of the square id
+    const pieceType = piece?.slice(piece.indexOf("_") + 1) ?? null;
 
-  getSquare() {}
+    const pieceColor = piece?.slice(0, piece.indexOf("_")) ?? null;
+    possibleMoves[squareArrayId] = {};
+
+    const idCol = alphPosIn[squareArrayId[0]];
+    const idRow = squareArrayId[1];
+    if (pieceColor === "white") {
+    }
+
+    switch (pieceType) {
+      case "pawn":
+        {
+          // console.log(
+          //   `I am a ${pieceType} that is on ${squareArrayId} which is ${idCol} and ${idRow}`
+          // );
+        }
+        break;
+      case "knight":
+        break;
+      case "rook":
+        {
+          for (let i = 1; i <= 8; i++) {
+            let possMovCol = `${alphPosOut[idCol]}${i}`;
+            let possMovRow = `${alphPosOut[i]}${idRow}`;
+            // console.log(possMovCol);
+            // console.log(possMovRow);
+            // console.log(currentParams[possMovCol].pieceColor);
+
+            if (possMovCol !== squareArrayId) {
+              // if (currentParams.possMovCol.pieceColor.value !== pieceColor)
+              possibleMoves[squareArrayId][possMovCol] = true;
+            }
+            if (possMovRow !== squareArrayId) {
+              possibleMoves[squareArrayId][possMovRow] = true;
+            }
+          }
+
+          // console.log(possibleMoves);
+        }
+
+        break;
+      case "bishop":
+        break;
+      case "queen":
+        break;
+      case "king":
+        break;
+    }
+  });
 }
 
-////////////////////////////////
-//  Add Event Listeners
-////////////////////////////////
+//update currentPrams Object
+function updateCurrParam() {
+  //selectAll div with class ".piece-box and and map it to a variable called "squareArray"
+  [...document.querySelectorAll(".piece-box")].map((squareArray) => {
+    //get the square id
+    const squareArrayId = squareArray.getAttribute("id");
+    //get the img element of individual pieces
+    const pieceElement = squareArray.querySelector(".piece");
+    //get the value of the 'piece-type' attribute => 'color_nameOfPiece'
+    const piece = pieceElement?.getAttribute("piece-type") ?? null;
+    //initialise possibleMoves obj with multiple empty obj with key of the square id
+    const pieceType = piece?.slice(piece.indexOf("_") + 1) ?? null;
 
-const posArray = [];
-//select box
-function AddSquareListeners() {
-  const squareArrays = document.querySelectorAll(".piece-box");
-  console.log(squareArrays);
-  for (const squareArray of squareArrays) {
-    console.log(squareArray);
-    console.log(squareArray.getAttribute("id"));
-    // console.log(squareArray.querySelector("img").getAttribute("piece-type"));
-    // // console.log([...squareArray.getAttribute("piece-type")]);
-    posArray.push(squareArray.getAttribute("id"));
+    const pieceColor = piece?.slice(0, piece.indexOf("_")) ?? null;
 
-    squareArray.addEventListener("mousedown", () => {
-      const clicked = document.querySelector(
-        `#${squareArray.getAttribute("id")}`
-      );
-      console.log(squareArray.getAttribute("id"));
-      clicked.classList.add("piece-ready");
+    currentParams[squareArrayId] = {};
+    currentParams[squareArrayId].squareArray = squareArray;
+    currentParams[squareArrayId].squareArrayId = squareArrayId;
+    currentParams[squareArrayId].pieceElement = pieceElement;
+    currentParams[squareArrayId].pieceType = pieceType;
+    currentParams[squareArrayId].pieceColor = pieceColor;
+
+    // console.log(squareArray);
+    // console.log(squareArrayId);
+    // console.log(pieceElement);
+    // console.log(pieceType);
+
+    console.log(currentParams);
+
+    // return handleParams;
+  });
+}
+
+function eventListenerStuff() {
+  [...document.querySelectorAll(".piece-box")].map((squareArray) => {
+    const squareArrayId = squareArray.getAttribute("id");
+    // //get the img element of individual pieces
+    // const pieceElement = squareArray.querySelector(".piece");
+    // //get the value of the 'piece-type' attribute => 'color_nameOfPiece'
+    // const pieceType = pieceElement?.getAttribute("piece-type") ?? null;
+
+    // let pieceColor = pieceType?.slice(0, pieceType.indexOf("_")) ?? null;
+
+    // // console.log(pieceColor);
+    // updateCurrParam();
+    updateCurrParam();
+    //get the img element of individual pieces
+    const pieceElement = currentParams[squareArrayId].pieceElement;
+    //get the value of the 'piece-type' attribute => 'color_nameOfPiece'
+    const pieceType = currentParams[squareArrayId].pieceType;
+
+    let pieceColor = currentParams[squareArrayId].pieceColor;
+
+    // console.log(pieceColor);
+
+    //insert an object with within the 'piecesEventListeners' object
+    //=> Key: position id, value: another Object(=> Key: Event, value: function
+
+    //function to recognise the first press of button
+    //if there are no ready button
+    //then selected button can be ready
+    //else remove chesspiece and append it to e.target
+
+    //why can only click on the span
+
+    squareArray.addEventListener("mouseenter", (e) => {
+      // console.log(e.target);
+      switch (gameState.whoseTurn) {
+        case "white":
+          switch (pieceColor) {
+            case "white":
+              squareArray.classList.add("piece-selected");
+              break;
+            case "black":
+              squareArray.classList.add("piece-not-allowed");
+              break;
+          }
+          break;
+        case "black":
+          switch (pieceColor) {
+            case "black":
+              squareArray.classList.add("piece-selected");
+              break;
+            case "white":
+              squareArray.classList.add("piece-not-allowed");
+              break;
+          }
+          break;
+      }
     });
-    squareArray.addEventListener("mouseup", () => {
-      const clicked = document.querySelector(
-        `#${squareArray.getAttribute("id")}`
-      );
-      clicked.classList.remove("piece-ready");
+    squareArray.addEventListener("mouseleave", (e) => {
+      squareArray.classList.remove("piece-selected");
+      squareArray.classList.remove("piece-not-allowed");
+      // squareArray.classList.remove("piece-ready");
     });
-    squareArray.addEventListener("mouseenter", () => {
-      const currMousePos = document.querySelector(
-        `#${squareArray.getAttribute("id")}`
-      );
-      currMousePos.classList.add("piece-selected");
+    squareArray.addEventListener("click", (e) => {
+      const img = pieceElement;
+      if (
+        squareArray.classList.contains("piece-selected") &&
+        document.querySelector(".piece-ready") == null
+      ) {
+        console.log(document.querySelector(".piece-ready"));
+        squareArray.classList.add("piece-ready");
+      } else if (e.target === pieceElement) {
+        squareArray.classList.remove("piece-ready");
+      } else {
+        const newLoc = e.target;
+        const img = document.querySelector(".piece-ready img");
+        const readySquare = document.querySelector(".piece-ready");
+
+        console.log(img);
+        // pieceElement.remove();
+        newLoc.insertAdjacentElement("beforeend", img);
+        readySquare.classList.remove("piece-ready");
+      }
+
+      // const readyPiece = document.querySelector(".piece-ready");
+      // if (prevDiv !== readyPiece) {
+      //   console.log(`Diff Div`);
+
+      //   prevDiv = readyPiece;
+      // } else {
+      //   squareArray.classList.remove("piece-ready");
+      // }
+
+      // console.log(e.target);
+      // console.log(readyPiece);
+      // while(e.target === readyPiece){
+      //   console.log
+      // //   readyPiece.addEventListener("click", (e) => {
+      // //   console.log(e.target);
+      // //   if(e.target === readyPiece) {
+      // //     break;
+      // //   }
+      // // });
+      // }
+      // }
+      // updateCurrParam();
     });
-    squareArray.addEventListener("mouseleave", () => {
-      const lastMousePos = document.querySelector(
-        `#${squareArray.getAttribute("id")}`
-      );
-      lastMousePos.classList.remove("piece-selected");
-      lastMousePos.classList.remove("piece-ready");
-    });
-  }
+  });
+}
+
+function selected(pieceType, target) {
+  // if(piecTy)
 }
 
 ////////////////////////////////
 //  Start Chess Game
 ////////////////////////////////
 
-let isPlayerWhite = true;
-const chessGame = new Game(isPlayerWhite);
-chessGame.generateBoard();
-chessGame.generatePieceBasedOnObject(initialPos);
-AddSquareListeners();
+// AddSquareListeners();
+
+// let isPlayerWhite = true;
+generateBoard();
+generatePieceBasedOnObject(initialPos);
+
+updateCurrParam();
+eventListenerStuff();
+getPossibleMoves();

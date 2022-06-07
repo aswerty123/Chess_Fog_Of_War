@@ -65,6 +65,9 @@ body {
 .piece-selected {
   background: yellow !important;
 }
+.piece-not-allowed {
+  background: red !important;
+}
 .piece-ready {
   background: yellowgreen !important;
 }

@@ -229,7 +229,10 @@ function clickFunc(squareArray, squareArrayId, e) {
   } else if (
     //========================================================== if img doesn't exist and there is piece selected
     currentParams[squareArrayId].pieceElement === null &&
-    document.querySelector(".piece-selected") !== null
+    document.querySelector(".piece-selected") !== null &&
+    currentParams[squareArrayId].squareArray.classList.contains(
+      "piece-possible-move"
+    )
   ) {
     const oldId = document.querySelector(".piece-selected").getAttribute("id");
     e.currentTarget.appendChild(currentParams[oldId].pieceElement);
@@ -259,7 +262,10 @@ function clickFunc(squareArray, squareArrayId, e) {
     currentParams[squareArrayId].pieceElement &&
     document.querySelector(".piece-selected") !== null &&
     currentParams[document.querySelector(".piece-selected").getAttribute("id")]
-      .pieceColor !== currentParams[squareArrayId].pieceColor
+      .pieceColor !== currentParams[squareArrayId].pieceColor &&
+    currentParams[squareArrayId].squareArray.classList.contains(
+      "piece-possible-move"
+    )
   ) {
     const attackerId = document
       .querySelector(".piece-selected")
@@ -301,27 +307,33 @@ function clickFunc(squareArray, squareArrayId, e) {
 ////////////////////////////////
 
 function mouseenterFunc(squareArray, squareArrayId) {
-  switch (gameState.isWhiteTurn) {
-    case true:
-      switch (currentParams[squareArrayId].pieceColor) {
-        case "white":
-          squareArray.classList.add("piece-allowed");
-          break;
-        case "black":
-          squareArray.classList.add("piece-not-allowed");
-          break;
-      }
-      break;
-    case false:
-      switch (currentParams[squareArrayId].pieceColor) {
-        case "black":
-          squareArray.classList.add("piece-allowed");
-          break;
-        case "white":
-          squareArray.classList.add("piece-not-allowed");
-          break;
-      }
-      break;
+  if (
+    document.querySelector(".piece-possible-move") === null &&
+    document.querySelector(".piece-selected") === null
+  ) {
+    switch (gameState.isWhiteTurn) {
+      case true:
+        switch (currentParams[squareArrayId].pieceColor) {
+          case "white":
+            squareArray.classList.add("piece-allowed");
+
+            break;
+          case "black":
+            squareArray.classList.add("piece-not-allowed");
+            break;
+        }
+        break;
+      case false:
+        switch (currentParams[squareArrayId].pieceColor) {
+          case "black":
+            squareArray.classList.add("piece-allowed");
+            break;
+          case "white":
+            squareArray.classList.add("piece-not-allowed");
+            break;
+        }
+        break;
+    }
   }
 }
 
@@ -808,12 +820,8 @@ resetButton.addEventListener("click", () => {
 //  Start Chess Game
 ////////////////////////////////
 
-// let isPlayerWhite = true;
 generateBoard();
 generatePieceBasedOnObject(initialPos);
 
 updateCurrParam();
 eventListenerStuff();
-// EventListenerObj.resetPiecesBoxListeners();
-// console.log(piecesEventListeners);
-// getPossibleMoves();

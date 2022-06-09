@@ -1,3 +1,4 @@
+/*==================================================================*/ /* Title and Stuff*/
 /* * {
   margin: 0 auto;
   padding: 0;
@@ -6,15 +7,36 @@
 
 body {
   overflow: scroll;
+  /* display: flexbox; */
+  justify-content: center;
+  align-items: center;
+}
+
+#title {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+
+#chess-board-title {
+  width: 399px;
+  font-size: 35px;
+  font-family: "Water Brush", cursive;
+}
+#graveyard-title {
+  width: 170px;
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
 }
 
 /*==================================================================*/ /* Chess Board*/
 
 .container {
-  margin-top: 100px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chess-board {
@@ -23,18 +45,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   /* flex-wrap: wrap-reverse; */
-  border: 3px solid black;
-  /* transform: rotate(180deg); */
-}
-
-.graveyard {
-  margin-top: 100px;
-  height: 400px;
-  width: 100px;
-  display: flex;
-  flex-wrap: wrap;
-  /* flex-wrap: wrap-reverse; */
-  border: 3px solid black;
+  border: 5px solid black;
   /* transform: rotate(180deg); */
 }
 
@@ -73,21 +84,111 @@ body {
   height: 45px;
 }
 
-.piece-selected {
+.piece-allowed {
   background: yellow !important;
+  cursor: pointer;
+  transition: all 0.4s ease;
 }
 .piece-not-allowed {
   background: red !important;
+  transition: all 0.4s ease;
 }
-.piece-ready {
+.piece-selected {
   background: yellowgreen !important;
+  box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.7);
+  /* border: 2px solid red; */
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-.selected {
-  background: yellowgreen !important;
+.piece-possible-move {
+  background: lightblue!important;
+  box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+/*==================================================================*/ /* Graveyard*/
+
+.graveyard {
+  height: 400px;
+  width: 170px;
+  display: flex;
+}
+
+.white-graveyard {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  flex-direction: column;
+}
+.black-graveyard {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  flex-direction: column;
+}
+
+/*==================================================================*/ /* Buttons*/
+.button-container {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#reset-button {
+  margin-top: 2%;
+  height: 30px;
+  width: 100px;
+  border: none;
+  background-color: firebrick;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+#reset-button:hover {
+  background-color: aqua;
+  color: firebrick;
+  box-shadow: -10px -10px 15px rgba(255, 255, 255, 0.5),
+    10px 10px 15px rgba(70, 70, 70, 0.12);
+}
+
+#reset-button:active {
+  background-color: aqua;
+  color: firebrick;
+  transition: all 0.2s ease;
+  box-shadow: inset -10px -10px 15px rgba(255, 255, 255, 0.5),
+    inset 10px 10px 15px rgba(70, 70, 70, 0.12);
 }
 
 /*==================================================================*/ /*==================================================================*/
-
+/* .chess-message .check-mate-message {
+  position: absolute;
+  width: 200px;
+  left: calc(50vw);
+  top: calc(50vh);
+  text-align: center;
+  padding: 10px 50px;
+}
+.chess-message .black-wins {
+  display: none;
+  background: black;
+  color: white;
+  box-shadow: 0 0 150px 75px white;
+}
+.chess-message .white-wins {
+  display: none;
+  background: white;
+  color: black;
+  box-shadow: 0 0 150px 75px black;
+} 
+/*==================================================================*/
+*/
 /* .upperdiv {
   position: absolute;
   top: 47%;

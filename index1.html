@@ -6,13 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="style1.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital@1&family=Water+Brush&display=swap"
+      rel="stylesheet"
+    />
     <!-- Help to add in Tab icon type .ico -->
     <link rel="icon" type="image/jpg" href="img/favicon.ico" />
     <link rel="shortcut icon" href="#" />
   </head>
   <body>
-    <div class="container"></div>
-    <div class="graveyard"></div>
+    <div id="title">
+      <div id="chess-board-title">ChessBoard</div>
+      <div id="graveyard-title">Graveyard</div>
+    </div>
+    <div class="container">
+      <div class="graveyard">
+        <div class="white-graveyard"></div>
+        <div class="black-graveyard"></div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button id="reset-button">Reset Game</button>
+    </div>
 
     <script type="text/javascript" src="script1.js"></script>
   </body>

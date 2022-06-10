@@ -106,6 +106,9 @@ body {
   cursor: pointer;
   transition: all 0.4s ease;
 }
+.foggy {
+  background: black !important;
+}
 
 /*==================================================================*/ /* Graveyard*/
 
@@ -115,6 +118,11 @@ body {
   display: flex;
 }
 
+.white-graveyard:before,
+.black-graveyard:before {
+  background-image: url("https://i.gifer.com/GXHe.gif");
+}
+
 .white-graveyard {
   height: 100%;
   width: 50%;
@@ -122,6 +130,7 @@ body {
   flex-wrap: wrap;
   border: 1px solid black;
   flex-direction: column;
+  background-image: url("https://i.gifer.com/GXHe.gif");
 }
 .black-graveyard {
   height: 100%;
@@ -130,8 +139,8 @@ body {
   flex-wrap: wrap;
   border: 1px solid black;
   flex-direction: column;
+  background-image: url("https://i.gifer.com/9vZJ.gif");
 }
-
 /*==================================================================*/ /* Buttons*/
 .button-container {
   overflow: hidden;

@@ -217,13 +217,10 @@ function clickFunc(squareArray, squareArrayId, e) {
     document.querySelector(".piece-selected") === null &&
     gameState.storedPieceElement === null &&
     squareArray.classList.contains("piece-allowed")
-    // Object.keys(possibleMoves[squareArray]) !== null
+    // && Object.keys(possibleMoves[squareArray]).length !== 0
   ) {
-    // console.log(squareArray.classList.contains("piece-allowed"));
-    // console.log(Object?.keys(possibleMoves[squareArray]) ?? null);
     squareArray.classList.add("piece-selected");
     gameState.storedPieceElement = currentParams[squareArrayId].pieceElement; //use the gamestate.storedPieceElement to store selected img
-    //update possible moves for specific selected piece
     // updateCurrParam();
     getPossibleMoves();
     // console.log(gameState.storedPieceElement);
@@ -242,6 +239,12 @@ function clickFunc(squareArray, squareArrayId, e) {
     gameState.storedPieceElement = null;
 
     gameState.isWhiteTurn = !gameState.isWhiteTurn;
+    // switch (gameState.isWhiteTurn) {
+    //   case true:
+    //     document.querySelector("body").style.backgroundColor = "white";
+    //   case false:
+    //     document.querySelector("body").style.backgroundColor = "grey";
+    // }
 
     [...document.querySelectorAll(".piece-possible-move")].map(
       (possibledBox) => {
@@ -264,8 +267,8 @@ function clickFunc(squareArray, squareArrayId, e) {
     //========================================================== if img exist and there is piece selected
     currentParams[squareArrayId].pieceElement &&
     document.querySelector(".piece-selected") !== null &&
-    currentParams[document.querySelector(".piece-selected").getAttribute("id")]
-      .pieceColor !== currentParams[squareArrayId].pieceColor &&
+    // currentParams[document.querySelector(".piece-selected").getAttribute("id")]
+    //   .pieceColor !== currentParams[squareArrayId].pieceColor &&
     currentParams[squareArrayId].squareArray.classList.contains(
       "piece-possible-move"
     )
@@ -304,9 +307,7 @@ function clickFunc(squareArray, squareArrayId, e) {
   //update current parameters after every click
   updateCurrParam();
   getPossibleMoves();
-  produceFog(gameState.isWhiteTurn);
 }
-
 ////////////////////////////////
 // Event Listeners Obj: mouseenterFunc
 ////////////////////////////////
@@ -774,62 +775,6 @@ function pawnPossMove(squareArrayId) {
           ] = true;
         }
       }
-      break;
-  }
-}
-
-////////////////////////////////
-//  Function to produce Fog
-////////////////////////////////
-
-//make an array to store the white/black piece location
-//if white turn, store white piece location in array
-//use array to get white possible move
-// store the white possible move in the same array
-// make the display
-
-function produceFog(isWhiteTurn) {
-  let arrayLocs = [];
-  let lightToFog = [];
-  let letItBeLight = [];
-  switch (isWhiteTurn) {
-    case true:
-      {
-        updateCurrParam();
-        [...document.querySelectorAll(".piece-box")].map((squareArray) => {
-          const squareArrayId = squareArray.getAttribute("id");
-          if (currentParams[squareArrayId].pieceColor === "white") {
-            arrayLocs.push(squareArrayId);
-          }
-        });
-        updateCurrParam();
-        for (const arrayLoc of arrayLocs) {
-          const keys = Object.keys(possibleMoves[arrayLoc]);
-          for (const key of keys) {
-            if (lightToFog.includes(key)) {
-              break;
-            } else {
-              lightToFog.push(key);
-            }
-          }
-        }
-        updateCurrParam();
-
-        letItBeLight = arrayLocs.concat(lightToFog);
-        console.log(letItBeLight);
-        for (const light of letItBeLight) {
-          const noFog = currentParams[light].squareArray;
-          noFog.classList.add("foggy");
-        }
-      }
-      break;
-    case false:
-      [...document.querySelectorAll(".foggy")].map((possibledBox) => {
-        possibledBox.classList.remove("foggy");
-      });
-      arrayLocs = [];
-      lightToFog = [];
-      letItBeLight = [];
       break;
   }
 }

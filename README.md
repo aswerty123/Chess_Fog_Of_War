@@ -40,5 +40,7 @@ Might come back to make a chess game of Fog of War Variant since it is possible 
 
 ### Reference YouTube Video and Code
 I used Tudor Todorescu chess code as reference for my code, you can check out his video in youtube and his code in github
+
  [I have coded Chess.com with JavaScript - YouTube](https://www.youtube.com/watch?v=aqNvMSuLuE0&t=4039s)
+ 
  [GitHub - tudorfis/chess](https://github.com/tudorfis/chess)

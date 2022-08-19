@@ -38,6 +38,10 @@ Have not yet created the function for check, checkmate, en passant, castling and
 
 Might come back to make a chess game of Fog of War Variant since it is possible since there is an object that shows the possible moves of every pieces each time any player make a move. so need to find a way to only show squares with white pieces and its possible move when it is white's turn and vice versa.
 
+## Screenshot
+![image](https://user-images.githubusercontent.com/44399805/185535271-8a5cfd31-f620-4608-aacb-394c45d9f76b.png)
+
+
 ## Reference YouTube Video and Code
 I used Tudor Todorescu chess code as reference for my code, you can check out his video in youtube and his code in github
 
